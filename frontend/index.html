@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Phishing Detector</title>
+</head>
+
+<body>
+    <h1>Welcome to AI Phishing Detector</h1>
+    <p>This website helps users detect phishing emails using Artificial Intelligence.</p>
+    <label>Enter Email Content:</label>
+    <br><br>
+ <textarea id="emailContent" rows="10" cols="60" placeholder="Paste your email here..."></textarea>
+    <br><br>
+  <button id="analyzeBtn">Analyze Email</button>
+  <br><br>
+<p id="result"></p>
+<script>
+document.getElementById("analyzeBtn").addEventListener("click", function () {
+
+    let email = document.getElementById("emailContent").value;
+    let result = document.getElementById("result");
+
+    if (email.trim() === "") {
+        result.innerHTML = "⚠ Please enter an email first.";
+        result.style.color = "red";
+    }else {
+
+    if (
+    email.includes("won") ||
+    email.includes("bank") ||
+    email.includes("otp") ||
+    email.includes("password") ||
+    email.includes("click") ||
+    email.includes("verify")
+) { {
+        result.innerHTML = "🔴 Phishing Email";
+        result.style.color = "red";
+    } else {
+        result.innerHTML = "🟢 Safe Email";
+        result.style.color = "green";
+    }
+
+}
+    
+
+});
+</script>
+</body>
+
+
+
+</html>

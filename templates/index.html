@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AI Phishing Security Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #0b1320;
+            color: white;
+        }
+
+        .navbar {
+            background: #0d1b2a;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .navbar a {
+            color: white;
+            margin-left: 15px;
+            text-decoration: none;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px;
+        }
+
+        .card-box {
+            background: #111a2e;
+            padding: 15px;
+            border-radius: 10px;
+            width: 30%;
+            text-align: center;
+        }
+
+        .main {
+            width: 60%;
+            margin: auto;
+            background: #111a2e;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 140px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #0b1320;
+            color: white;
+            border: 1px solid #2a3b55;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: #00a6fb;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #0b1320;
+            border-radius: 10px;
+        }
+
+        .safe { color: #2ecc71; }
+        .phishing { color: #ff4d4d; }
+
+        .tag {
+            display: inline-block;
+            background: #1f2a44;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .bar {
+            background: #1f2a44;
+            height: 18px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4d4d, #ffb703);
+            text-align: center;
+            font-size: 12px;
+        }
+
+        /* LOADER */
+        #loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            text-align: center;
+            padding-top: 200px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #00a6fb;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            margin: auto;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+    <h2>🧠 AI Analyzing Email...</h2>
+    <div class="spinner"></div>
+</div>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div><b>🛡 AI Phishing Dashboard</b></div>
+    <div>
+        <a href="/">Home</a>
+        <a href="/history">History</a>
+    </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+
+    <div class="card-box">
+        <h3>Total Scans</h3>
+        <h2>{{ total }}</h2>
+    </div>
+
+    <div class="card-box">
+        <h3>Phishing</h3>
+        <h2 style="color:red;">{{ phishing }}</h2>
+    </div>
+
+    <div class="card-box">
+        <h3>Safe</h3>
+        <h2 style="color:lightgreen;">{{ safe }}</h2>
+    </div>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <form method="POST" action="/check" onsubmit="showLoader()">
+
+        <textarea name="email" placeholder="Paste email here..." required></textarea>
+
+        <button type="submit">Analyze Email</button>
+
+    </form>
+
+    {% if result %}
+
+    <div class="result-box">
+
+        <h2 class="{% if 'Safe' in result %}safe{% else %}phishing{% endif %}">
+            {{ result }}
+        </h2>
+
+        <p><b>Risk:</b> {{ risk }}</p>
+        <p><b>Score:</b> {{ score }}/100</p>
+
+        <div class="bar">
+            <div class="bar-fill" style="width: {{ score }}%;">
+                {{ score }}%
+            </div>
+        </div>
+
+        <br>
+
+        <p><b>AI Confidence:</b> {{ confidence }}%</p>
+
+        <div class="bar">
+            <div class="bar-fill" style="width: {{ confidence }}%;">
+                {{ confidence }}%
+            </div>
+        </div>
+
+        <br>
+
+        <p><b>Reasons:</b></p>
+        {% for r in reasons %}
+            <span class="tag">{{ r }}</span>
+        {% endfor %}
+
+        <br><br>
+
+        <p><b>AI Explanation:</b></p>
+        {% for e in explanation %}
+            <li>{{ e }}</li>
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<!-- SCRIPT -->
+<script>
+function showLoader() {
+    document.getElementById("loader").style.display = "block";
+}
+</script>
+
+</body>
+</html>
